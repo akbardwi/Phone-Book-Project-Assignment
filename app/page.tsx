@@ -541,9 +541,6 @@ const Page = () => {
                             </button>
                         </div>
                     </div>
-                    <Link className="text-sm underline text-center block" href="https://t.me/fhrabbi">
-                        Report a problem
-                    </Link>
                 </div>
             ) : (
                 <img className="h-10 w-10 mx-auto my-3" src="/loading2.gif" alt=""/>
