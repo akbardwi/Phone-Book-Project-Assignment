@@ -247,7 +247,7 @@ const Page = () => {
                     <div className="bg-gray-800 p-4">
                         <div className="flex justify-between">
                             <h2 className="text-2xl text-center text-white font-bold ">
-                                Phone-Book
+                                Phone Book
                             </h2>
                         </div>
                         <div className="relative">
