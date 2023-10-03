@@ -9,6 +9,8 @@ import { ADD_CONTACT, ADD_PHONE_NUMBER, UPDATE_CONTACT, UPDATE_PHONE_NUMBERS, DE
 
 const Page = () => {
     const client = createApolloClient();
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [currentPage, setCurrentPage] = useState(1);
     const [saveNumber, setSaveNumber] = useState(false);
     const [searchText, setSearchText] = useState("");
     const [firstName, setFirstName] = useState("");
@@ -48,14 +50,12 @@ const Page = () => {
             query: GET_CONTACTS_LIST,
         });
         console.log(data.contact);
-        if (data.contact) { // alert(JSON.stringify(response.contacts),null,3)
-            // const sortedContacts = sortArrayOfObjectsByName(data.contact);
+        if (data.contact) {
             setContacts(data.contact);
             setFilteredContacts(data.contact);
             setIsLoading(false);
             setIsContactsLoading(false);
         } else {
-            // const sortedContacts = sortArrayOfObjectsByName(data.contact);
             setContacts(data.contact);
             setFilteredContacts(data.contact);
             setIsError(false);
@@ -233,6 +233,19 @@ const Page = () => {
             toast.error(e.message);
         }
     };
+
+    // Calculate the start and end index for the current page
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+
+    // Slice the contacts for the current page
+    const currentPageContacts = filteredContacts.slice(startIndex, endIndex);
+
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
+    };
+
+    const totalPages = Math.ceil(filteredContacts.length / itemsPerPage);
 
     useEffect(() => {
         setisLoggedIn(true);
@@ -422,7 +435,7 @@ const Page = () => {
                         )
                     }
                         {
-                        filteredContacts && filteredContacts.length > 0 ? filteredContacts.map((contact) => {
+                        filteredContacts && filteredContacts.length > 0 ? currentPageContacts.map((contact) => {
                             return(!isContactsLoading && (
                                 <div className="relative m-4 bg-gray-800 text-white px-3 py-2 rounded" key={contact.id}>
                                     {/*<span className="text-black absolute right-2 top-2 bg-slate-100 text-black px-2 rounded text-sm" onClick={()=>copyNumber(contact.number)}>Copy</span>*/}
@@ -494,7 +507,40 @@ const Page = () => {
                         }) : isLoading && !isNotFound && !isError && (
                             <img className="h-10 w-10 mx-auto my-3" src="/loading2.gif" alt=""/>
                         )
-                    } </div>
+                        
+                    } 
+                    {/* Pagination */}
+                        <div className="flex justify-center items-center">
+                            <button disabled={currentPage == 1}
+                                onClick={
+                                    () => handlePageChange(currentPage - 1)
+                                }
+                                className="bg-gray-800 text-white px-3 py-1 rounded">
+                                Prev
+                            </button>
+                            {
+                            Array(totalPages).fill("").map((_, index) => (
+                                <button key={index}
+                                    onClick={
+                                        () => handlePageChange(index + 1)
+                                    }
+                                    className={`mx-2 px-3 py-1 rounded ${
+                                        currentPage == index + 1 ? "bg-gray-800 text-white" : "bg-gray-300 text-gray-800"
+                                    }`}>
+                                    {
+                                    index + 1
+                                } </button>
+                            ))
+                            }
+                            <button disabled={currentPage == totalPages}
+                                onClick={
+                                    () => handlePageChange(currentPage + 1)
+                                }
+                                className="bg-gray-800 text-white px-3 py-1 rounded">
+                                Next
+                            </button>
+                        </div>
+                    </div>
                     <Link className="text-sm underline text-center block" href="https://t.me/fhrabbi">
                         Report a problem
                     </Link>
