@@ -490,7 +490,7 @@ const Page = () => {
                             {
                                 !isContactsLoading && !isLoading && favoriteContacts.length == 0 && (
                                     <p className="text-center text-red-500 text-sm font-bold my-3">
-                                        You don't have any favorite contact!
+                                        You dont have any favorite contact!
                                     </p>
                                 )
                             }
